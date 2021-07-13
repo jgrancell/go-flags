@@ -16,6 +16,7 @@ func (f *Flags) Parse() ([]string, error) {
 		// Determining if we need to skip the value
 		if skip {
 			skip = false
+			continue
 		} else {
 			// Determining if our current arg is a flag
 			if isFlag(args[i]) {
@@ -23,14 +24,15 @@ func (f *Flags) Parse() ([]string, error) {
 				name := strings.TrimLeft(args[i], "-")
 				// Checking to see if it's a set flag
 				if f.isSet(name) {
-					if f.Flags[name].Class == "bool" {
-						f.Flags[name].Value = true
+					metadata := f.Flags[name].attributes()
+					if metadata.Class == "bool" {
+						f.Flags[name].setValue(true)
 						continue
 					} else {
 						if isFlag(args[i+1]) {
 							return nil, &NoValueDefinedForFlag{Name: name}
 						}
-						f.Flags[name].Value = args[i+1]
+						f.Flags[name].setValue(args[i+1])
 						skip = true
 						continue
 					}

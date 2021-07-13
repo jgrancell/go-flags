@@ -10,22 +10,12 @@ func (f *Flags) isSet(name string) bool {
 	return false
 }
 
-func (f *Flags) isDupe(flag *Flag) bool {
-	existing, ok := f.Flags[flag.Name]
+func (f *Flags) isDupe(metadata *Metadata) bool {
+	existing, ok := f.Flags[metadata.Name]
 	if !ok {
 		return false
 	}
 
-	if existing.Description != flag.Description {
-		return false
-	}
-
-	if existing.Class != flag.Class {
-		return false
-	}
-
-	if existing.Default != flag.Default {
-		return false
-	}
-	return true
+	existing_metadata := existing.attributes()
+	return existing_metadata.Description == metadata.Description
 }
